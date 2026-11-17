@@ -1,0 +1,159 @@
+* {
+    box-sizing: border-box
+}
+
+body {
+    margin: 0;
+    background: #11161c;
+    color: #e8edf2;
+    font: 15px Arial, sans-serif
+}
+
+header {
+    height: 70px;
+    padding: 0 5vw;
+    display: flex;
+    align-items: center;
+    gap: 35px;
+    background: #191f27;
+    border-bottom: 1px solid #343b44
+}
+
+header b {
+    color: #f0a43a;
+    font-size: 22px
+}
+
+header span {
+    margin-left: auto;
+    color: #77818d;
+    font-size: 12px
+}
+
+nav button {
+    background: none;
+    border: 0;
+    color: #aeb7c2;
+    padding: 25px 12px;
+    cursor: pointer
+}
+
+main {
+    max-width: 1180px;
+    margin: auto;
+    padding: 55px 24px
+}
+
+.eyebrow {
+    color: #f0a43a;
+    font-size: 12px;
+    letter-spacing: 2px
+}
+
+h1 {
+    font-size: 38px;
+    margin: 8px 0
+}
+
+#reel {
+    height: 170px;
+    margin: 40px 0 24px;
+    background: #0b0f13;
+    border: 1px solid #303844;
+    overflow: hidden;
+    position: relative
+}
+
+#track {
+    display: flex;
+    gap: 6px;
+    height: 100%;
+    align-items: center;
+    transform: translateX(0)
+}
+
+.roll-item {
+    flex: 0 0 150px;
+    height: 130px;
+    background: #1c232c;
+    border-bottom: 4px solid var(--c);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 10px;
+    font-weight: bold
+}
+
+#marker {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #f7b64f;
+    box-shadow: 0 0 10px #f7b64f
+}
+
+.primary {
+    font-weight: bold;
+    background: #e59a32;
+    color: #161616;
+    border: 0;
+    padding: 16px 35px;
+    cursor: pointer
+}
+
+.primary:disabled {
+    opacity: .5
+}
+
+.drops {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+    gap: 12px;
+    margin-top: 35px
+}
+
+.item {
+    min-height: 125px;
+    background: #1a2129;
+    border-bottom: 4px solid var(--c);
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px
+}
+
+.item .art {
+    font-size: 40px;
+    color: var(--c);
+    margin: auto
+}
+
+.item small {
+    color: #8f9aa7
+}
+
+#status {
+    min-height: 20px;
+    color: #f6bd69
+}
+
+@media(max-width:600px) {
+    header {
+        gap: 10px
+    }
+
+    header span {
+        display: none
+    }
+
+    h1 {
+        font-size: 30px
+    }
+
+    .roll-item {
+        flex-basis: 120px
+    }
+}

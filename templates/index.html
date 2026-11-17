@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Local Case Simulator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <header><b>CASE LAB</b>
+        <nav><button id="casesTab">CASES</button><button id="invTab">INVENTORY</button></nav><span>LOCAL
+            SIMULATOR</span>
+    </header>
+    <main>
+        <section id="cases">
+            <p class="eyebrow">CASE OPENING</p>
+            <h1>Prototype Case</h1>
+            <p>Fictional items, local inventory, no real money.</p>
+            <div id="reel">
+                <div id="track"></div>
+                <div id="marker"></div>
+            </div><button id="openBtn" class="primary">OPEN CASE</button>
+            <p id="status"></p>
+            <div class="drops">{% for i in items %}<div class="item" style="--c:{{i.color}}">
+                    <div class="art">◆</div><b>{{i.name}}</b><small>{{i.rarity}}</small>
+                </div>{% endfor %}</div>
+        </section>
+        <section id="inventory" hidden>
+            <p class="eyebrow">COLLECTION</p>
+            <h1>Inventory</h1>
+            <div id="inventoryGrid" class="drops"></div>
+        </section>
+    </main>
+    <script src="{{ url_for('static', filename='case.js') }}"></script>
+</body>
+
+</html>
