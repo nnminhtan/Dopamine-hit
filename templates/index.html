@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Case Lab</title>
+
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='style.css') }}"
+  >
+</head>
+
+<body>
+
+  <!-- =====================================================
+       Top Navigation
+       ===================================================== -->
+
+  <header class="topbar">
+    <a class="brand" href="#">CASE LAB</a>
+
+    <nav>
+      <a class="active" href="#opening">OPEN</a>
+      <a href="#contents">CONTENTS</a>
+    </nav>
+
+    <span class="mode">Open a Case twin</span>
+  </header>
+
+
+  <main>
+
+    <!-- =====================================================
+         Case Header
+         ===================================================== -->
+
+    <section class="hero" id="opening">
+
+      <div>
+        <p class="eyebrow">SIMULATOR</p>
+        <h1>CS:GO Weapon Case</h1>
+
+        <p class="muted">
+          Open the case to generate a skin, float,
+          wear condition and paint seed.
+        </p>
+      </div>
+
+      <div class="case-art">
+        CASE
+        <br>
+        <span>01</span>
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         Opening Reel
+         ===================================================== -->
+
+    <section class="reel-shell">
+
+      <div
+        id="track"
+        class="track"
+      ></div>
+
+      <div
+        class="marker"
+        aria-hidden="true"
+      ></div>
+
+    </section>
+
+
+    <!-- =====================================================
+         Open Button
+         ===================================================== -->
+
+    <div class="controls">
+
+      <button
+        id="openButton"
+        class="primary"
+        type="button"
+      >
+        OPEN CASE
+      </button>
+
+      <div
+        id="result"
+        class="result"
+        aria-live="polite"
+      >
+        Unlock now.
+      </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         Winning Item Details
+         Hidden until case has been opened
+         ===================================================== -->
+
+    <section
+      id="winnerPanel"
+      class="winner-panel"
+      hidden
+    >
+
+      <p class="eyebrow">
+        ITEM UNBOXED
+      </p>
+
+      <div class="winner-card">
+
+        <div
+          id="winnerIcon"
+          class="winner-icon"
+          aria-hidden="true"
+        >
+          ◆
+        </div>
+
+        <div class="winner-information">
+
+          <h2 id="winnerName">
+            Item Name
+          </h2>
+
+          <p id="winnerRarity">
+            Rarity
+          </p>
+
+
+          <div class="winner-stats">
+
+            <div class="stat">
+              <span class="stat-label">
+                FLOAT
+              </span>
+
+              <strong id="winnerFloat">
+                0.00000000
+              </strong>
+            </div>
+
+
+            <div class="stat">
+              <span class="stat-label">
+                WEAR
+              </span>
+
+              <strong id="winnerWear">
+                Unknown
+              </strong>
+            </div>
+
+
+            <div class="stat">
+              <span class="stat-label">
+                PAINT SEED
+              </span>
+
+              <strong id="winnerSeed">
+                0
+              </strong>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         Case Contents
+         ===================================================== -->
+
+    <section
+      id="contents"
+      class="contents"
+    >
+
+      <p class="eyebrow">
+        CASE CONTENTS
+      </p>
+
+      <h2>
+        Possible Items
+      </h2>
+
+
+      <div class="item-grid">
+
+        {% for item in items %}
+
+        <article
+          class="item-card"
+          style="--rarity: {{ item.color }}"
+        >
+
+          <div
+            class="item-icon"
+            aria-hidden="true"
+          >
+            ◆
+          </div>
+
+
+          <strong class="item-name">
+            {{ item.name }}
+          </strong>
+
+
+          <small class="item-rarity">
+            {{ item.rarity }}
+          </small>
+
+
+          <div class="item-details">
+
+            <span>
+              Float
+            </span>
+
+            <strong>
+              {{ "%.2f"|format(item.min_float) }}
+              -
+              {{ "%.2f"|format(item.max_float) }}
+            </strong>
+
+          </div>
+
+
+          <div class="item-details">
+
+            <span>
+              Drop Chance
+            </span>
+
+            <strong>
+              {{ "%.4f"|format(item.weight) }}%
+            </strong>
+
+          </div>
+
+        </article>
+
+        {% endfor %}
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- =====================================================
+       Send Flask's item list to JavaScript
+       ===================================================== -->
+
+  <script>
+    window.CASE_ITEMS = {{ items | tojson }};
+  </script>
+
+
+  <script
+    src="{{ url_for('static', filename='case.js') }}"
+  ></script>
+
+</body>
+
+</html>
