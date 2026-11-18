@@ -1,46 +1,118 @@
-const track = document.querySelector('#track'), btn = document.querySelector('#openBtn'), statusEl = document.querySelector('#status');
-const palette = [
-    ['MP9 | Cobalt Grid', '#4b69ff'], 
-    ['Glock-18 | Violet Circuit', '#8847ff'], 
-    ['AK-47 | Neon Ember', '#d32ce6'], 
-    ['AWP | Crimson Pulse', '#eb4b4b']
-];
-function card(n, c) { 
-    let d = document.createElement('div'); 
-    d.className = 'roll-item'; 
-    d.style.setProperty('--c', c); 
-    d.textContent = n; 
-    return d 
-}
-async function openCase() { 
-    btn.disabled = true; 
-    statusEl.textContent = 'Opening...'; 
-    track.innerHTML = ''; 
-    track.style.transition = 'none'; 
-    track.style.transform = 'translateX(0)'; 
-    let res = await fetch('/api/open', { method: 'POST' }), winner = await res.json(); 
-    let all = []; for (let i = 0; i < 52; i++) { 
-        let x = palette[Math.floor(Math.random() * palette.length)]; all.push(x) 
-    } all[46] = [winner.name, winner.color]; 
-    all.forEach(x => track.append(card(x[0], x[1]))); 
-    requestAnimationFrame(() => requestAnimationFrame(() => { 
-        let w = track.children[0].getBoundingClientRect().width + 6; 
-        let target = 46 * w - (document.querySelector('#reel').clientWidth / 2) + (w / 2); track.style.transition = 'transform 6.5s cubic-bezier(.08,.65,.15,1)'; 
-        track.style.transform = `translateX(-${target}px)` })); 
-        setTimeout(() => { statusEl.textContent = `You opened: ${winner.name} (${winner.rarity})`; 
-        btn.disabled = false 
-    }, 6600) 
+const track = document.querySelector("#track");
+const openButton = document.querySelector("#openButton");
+const result = document.querySelector("#result");
+const reel = document.querySelector(".reel-shell");
+const items = window.CASE_ITEMS;
+
+const WINNER_INDEX = 46;
+const REEL_SIZE = 54;
+const GAP = 8;
+
+function randomItem() {
+  return items[Math.floor(Math.random() * items.length)];
 }
 
-btn.addEventListener('click', openCase);
+function createCard(item) {
+  const card = document.createElement("div");
+  card.className = "roll-card";
+  card.style.setProperty("--rarity", item.color);
+  card.textContent = item.name;
+  return card;
+}
 
-document.querySelector('#casesTab').onclick = () => { cases.hidden = false; inventory.hidden = true };
+function buildReel(winner) {
+  const reelItems = Array.from({ length: REEL_SIZE }, randomItem);
+  reelItems[WINNER_INDEX] = winner;
+  track.replaceChildren(...reelItems.map(createCard));
+}
 
-document.querySelector('#invTab').onclick = async () => { cases.hidden = true; inventory.hidden = false; 
-    let data = await (await fetch('/api/inventory')).json(), g = document.querySelector('#inventoryGrid'); 
-    g.innerHTML = ''; 
-    data.forEach(x => { let d = document.createElement('div'); 
-        d.className = 'item'; d.style.setProperty('--c', x.color); 
-        d.innerHTML = `<div class="art">◆</div><b>${x.name}</b><small>${x.rarity} · ${x.opened_at}</small>`; 
-        g.append(d) }) 
-    };
+async function requestWinner() {
+  const response = await fetch("/api/open", { method: "POST" });
+  if (!response.ok) throw new Error("The Flask API returned an error.");
+  return response.json();
+}
+
+function animateToWinner() {
+  const cardWidth = track.children[0].getBoundingClientRect().width;
+  const winnerCenter = WINNER_INDEX * (cardWidth + GAP) + cardWidth / 2;
+  const target = winnerCenter - reel.clientWidth / 2;
+
+  track.style.transition = "none";
+  track.style.transform = "translateX(0)";
+
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    track.style.transition = "transform 6.2s cubic-bezier(.08,.66,.16,1)";
+    track.style.transform = `translateX(-${target}px)`;
+  }));
+}
+
+async function openCase() {
+  openButton.disabled = true;
+  result.textContent = "Opening...";
+
+  try {
+    const winner = await requestWinner();
+    buildReel(winner);
+    animateToWinner();
+
+    window.setTimeout(() => {
+
+      // Show short result next to the OPEN CASE button
+      result.textContent = `You unboxed ${winner.name}`;
+
+      // Get the winner panel elements
+      const winnerPanel =
+        document.querySelector("#winnerPanel");
+
+      const winnerName =
+        document.querySelector("#winnerName");
+
+      const winnerRarity =
+        document.querySelector("#winnerRarity");
+
+      const winnerFloat =
+        document.querySelector("#winnerFloat");
+
+      const winnerWear =
+        document.querySelector("#winnerWear");
+
+      const winnerSeed =
+        document.querySelector("#winnerSeed");
+
+      // Add the generated Flask values
+      winnerName.textContent =
+        winner.name;
+
+      winnerRarity.textContent =
+        winner.rarity;
+
+      winnerFloat.textContent =
+        Number(winner.float).toFixed(8);
+
+      winnerWear.textContent =
+        winner.wear;
+
+      winnerSeed.textContent =
+        winner.seed;
+
+
+      // Use the rarity colour for the result
+      winnerPanel.style.setProperty(
+        "--winner-color",
+        winner.color
+      );
+
+      // Reveal the winner
+      winnerPanel.hidden = false;
+
+      openButton.disabled = false;
+
+    }, 6300);
+  } catch (error) {
+    result.textContent = `Could not open the case: ${error.message}`;
+    openButton.disabled = false;
+  }
+}
+
+buildReel(randomItem());
+openButton.addEventListener("click", openCase);

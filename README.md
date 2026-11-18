@@ -1,17 +1,25 @@
-# Dopamine-hit
+# Case Lab v2
 
-# Local Case Simulator
+Clean Flask + HTML/CSS/JavaScript test build. No database and no logging of case openings.
 
-A local-only Flask case-opening simulator using fictional item names and fake credits.
+## Run locally
 
-## Run
-
+### Windows
 ```bash
 python -m venv .venv
-# Windows: .venv\Scripts\activate
-# macOS/Linux: source .venv/bin/activate
+.venv\Scripts\activate
 pip install -r requirements.txt
 python app.py
 ```
 
-Open http://127.0.0.1:5000
+Open `http://127.0.0.1:5000`.
+
+Exit the virtual environment with `deactivate`.
+
+## Files
+- `app.py`: Flask API and Python case logic.
+- `templates/index.html`: page structure.
+- `static/style.css`: site appearance.
+- `static/case.js`: reel animation and API call.
+
+All item names are fictional placeholders.
